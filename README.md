@@ -18,7 +18,16 @@ Sorts packages into **STANDARD**, **SPECIAL**, or **REJECTED** stacks based on v
 | SPECIAL | Bulky **or** heavy (but not both) |
 | REJECTED | Bulky **and** heavy |
 
-## Quick Start
+## Run in GitHub Codespaces (easiest)
+
+1. Click the green **`<> Code`** button on the repo → **Codespaces** tab.
+2. Click **"Create codespace on main"**.
+3. Dependencies install automatically and the server starts.
+4. A browser tab opens with the app — ready to use.
+
+> If the app doesn't auto-start, open the Codespaces terminal and run `python app.py`, then click the **Ports** tab → globe icon on port **5000**.
+
+## Run Locally
 
 ```bash
 # 1. Clone the repo
