@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Package Sorter — Smarter Technology</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --surface: #f5f6f8;
+      --border: #e0e2e8;
+      --text: #1a1d27;
+      --muted: #6b7080;
+      --accent: #6c63ff;
+      --green: #2ecc71;
+      --amber: #f39c12;
+      --red: #e74c3c;
+      --radius: 10px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    header h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+    header h1 span { color: var(--accent); }
+    header p { color: var(--muted); font-size: 0.9rem; margin-top: 0.25rem; }
+
+    .hero-img {
+      display: block;
+      max-width: 520px;
+      width: 100%;
+      margin: 1rem auto 0;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      opacity: 0.85;
+    }
+
+    .guide {
+      max-width: 700px;
+      margin: 0 auto 2rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .guide h3 {
+      font-size: 0.9rem;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+    .guide ol {
+      padding-left: 1.2rem;
+      margin: 0;
+    }
+    .guide li { margin-bottom: 0.3rem; }
+    .guide strong { color: var(--text); }
+
+    .layout {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 2rem;
+    }
+
+    /* ── Panels ─────────────────────────────── */
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      overflow: hidden;
+    }
+    .panel h2 {
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .panel h2 .icon { font-size: 1.2rem; }
+
+    /* ── Form ───────────────────────────────── */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+    .field { display: flex; flex-direction: column; gap: 0.3rem; }
+    .field label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--muted);
+    }
+    .field input {
+      width: 100%;
+      min-width: 0;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.55rem 0.7rem;
+      color: var(--text);
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .field input:focus { border-color: var(--accent); }
+
+    .btn {
+      width: 100%;
+      margin-top: 1rem;
+      padding: 0.7rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .btn:hover { opacity: 0.85; }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      margin-top: 0.5rem;
+    }
+
+    /* ── Result badge ───────────────────────── */
+    .result-box {
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 6px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 1.1rem;
+      display: none;
+    }
+    .result-box.show { display: block; }
+    .result-STANDARD { background: rgba(46,204,113,0.15); color: var(--green); border: 1px solid var(--green); }
+    .result-SPECIAL  { background: rgba(243,156,18,0.15); color: var(--amber); border: 1px solid var(--amber); }
+    .result-REJECTED { background: rgba(231,76,60,0.15);  color: var(--red);   border: 1px solid var(--red); }
+
+    .result-details {
+      margin-top: 0.5rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    /* ── Benchmarks ─────────────────────────── */
+    .section-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 1.25rem 0;
+    }
+    .benchmark-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+    .benchmark-header h3 { font-size: 0.85rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+    .benchmark-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+    .benchmark-field label { font-size: 0.7rem; }
+    .benchmark-field input {
+      width: 100%;
+      min-width: 0;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.4rem 0.5rem;
+      color: var(--text);
+      font-size: 0.85rem;
+      outline: none;
+    }
+    .benchmark-field input:focus { border-color: var(--accent); }
+    .benchmark-saved {
+      color: var(--green);
+      font-size: 0.8rem;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .benchmark-saved.show { opacity: 1; }
+
+    /* ── Stacks (right column) ──────────────── */
+    .stacks { display: flex; flex-direction: column; gap: 1rem; }
+    .stack-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+    }
+    .stack-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .stack-title .dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .dot-standard { background: var(--green); }
+    .dot-special  { background: var(--amber); }
+    .dot-rejected { background: var(--red); }
+
+    .stack-count {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+    .stack-label { font-size: 0.8rem; color: var(--muted); }
+
+    .stack-items {
+      margin-top: 0.75rem;
+      max-height: 180px;
+      overflow-y: auto;
+    }
+    .stack-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      margin-bottom: 0.3rem;
+      background: var(--bg);
+      animation: slideIn 0.25s ease;
+    }
+    .stack-item .dims { color: var(--muted); }
+    .stack-item .mass { font-weight: 600; }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Scrollbar ──────────────────────────── */
+    .stack-items::-webkit-scrollbar { width: 4px; }
+    .stack-items::-webkit-scrollbar-track { background: transparent; }
+    .stack-items::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    /* ── Responsive ─────────────────────────── */
+    @media (max-width: 768px) {
+      .layout { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1><span>⚙</span> Smarter Technology — Package Sorter</h1>
+  <p>Robotic arm dispatch simulator</p>
+  <img src="/factory.png" alt="Robotic factory illustration" class="hero-img" />
+</header>
+
+<div class="guide">
+  <h3>How to use</h3>
+  <ol>
+    <li>Enter the package <strong>Width</strong>, <strong>Height</strong>, <strong>Length</strong> (cm) and <strong>Mass</strong> (kg) on the left panel.</li>
+    <li>Click <strong>Dispatch Package</strong> (or press Enter) to sort it into the correct stack.</li>
+    <li>View results in the stack cards on the right — each dispatched package is logged.</li>
+    <li>To adjust sorting rules, update the <strong>Benchmark Thresholds</strong> below the form (changes are saved automatically).</li>
+    <li>Click <strong>Clear Stacks</strong> to reset all counters and start fresh.</li>
+  </ol>
+</div>
+
+<div class="layout">
+  <!-- Left: Controls -->
+  <div>
+    <div class="panel">
+      <h2><span class="icon">📦</span> Sort Package</h2>
+      <div class="form-grid">
+        <div class="field">
+          <label>Width (cm)</label>
+          <input type="number" id="width" min="0" step="any" value="10" />
+        </div>
+        <div class="field">
+          <label>Height (cm)</label>
+          <input type="number" id="height" min="0" step="any" value="10" />
+        </div>
+        <div class="field">
+          <label>Length (cm)</label>
+          <input type="number" id="length" min="0" step="any" value="10" />
+        </div>
+        <div class="field">
+          <label>Mass (kg)</label>
+          <input type="number" id="mass" min="0" step="any" value="5" />
+        </div>
+      </div>
+
+      <button class="btn btn-primary" onclick="dispatch()">Dispatch Package</button>
+      <button class="btn btn-outline" onclick="clearAll()">Clear Stacks</button>
+
+      <div id="result" class="result-box"></div>
+
+      <hr class="section-divider" />
+
+      <!-- Benchmarks -->
+      <div class="benchmark-header">
+        <h3>Benchmark Thresholds</h3>
+        <span id="saved-msg" class="benchmark-saved">✓ Saved</span>
+      </div>
+      <div class="benchmark-grid">
+        <div class="field benchmark-field">
+          <label>Bulky Volume (cm³)</label>
+          <input type="number" id="bench-volume" min="0" value="1000000" onchange="saveBenchmarks()" />
+        </div>
+        <div class="field benchmark-field">
+          <label>Bulky Dim (cm)</label>
+          <input type="number" id="bench-dim" min="0" value="150" onchange="saveBenchmarks()" />
+        </div>
+        <div class="field benchmark-field">
+          <label>Heavy Mass (kg)</label>
+          <input type="number" id="bench-mass" min="0" value="20" onchange="saveBenchmarks()" />
+        </div>
+      </div>
+      <button class="btn btn-outline" onclick="resetBenchmarks()">Reset to Defaults</button>
+    </div>
+  </div>
+
+  <!-- Right: Stacks -->
+  <div class="stacks">
+    <div class="stack-card">
+      <div class="stack-title"><span class="dot dot-standard"></span> Standard</div>
+      <div class="stack-count" id="count-standard">0</div>
+      <div class="stack-label">packages — handled normally</div>
+      <div class="stack-items" id="items-standard"></div>
+    </div>
+    <div class="stack-card">
+      <div class="stack-title"><span class="dot dot-special"></span> Special</div>
+      <div class="stack-count" id="count-special">0</div>
+      <div class="stack-label">packages — manual handling required</div>
+      <div class="stack-items" id="items-special"></div>
+    </div>
+    <div class="stack-card">
+      <div class="stack-title"><span class="dot dot-rejected"></span> Rejected</div>
+      <div class="stack-count" id="count-rejected">0</div>
+      <div class="stack-label">packages — cannot be processed</div>
+      <div class="stack-items" id="items-rejected"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── Benchmarks ──────────────────────────────────
+  const DEFAULTS = { volume: 1_000_000, dim: 150, mass: 20 };
+
+  function getBenchmarks() {
+    return {
+      volume: Number(document.getElementById('bench-volume').value),
+      dim:    Number(document.getElementById('bench-dim').value),
+      mass:   Number(document.getElementById('bench-mass').value),
+    };
+  }
+
+  function saveBenchmarks() {
+    const b = getBenchmarks();
+    localStorage.setItem('pkg-benchmarks', JSON.stringify(b));
+    const msg = document.getElementById('saved-msg');
+    msg.classList.add('show');
+    setTimeout(() => msg.classList.remove('show'), 1500);
+  }
+
+  function resetBenchmarks() {
+    document.getElementById('bench-volume').value = DEFAULTS.volume;
+    document.getElementById('bench-dim').value    = DEFAULTS.dim;
+    document.getElementById('bench-mass').value   = DEFAULTS.mass;
+    saveBenchmarks();
+  }
+
+  function loadBenchmarks() {
+    const stored = localStorage.getItem('pkg-benchmarks');
+    if (stored) {
+      const b = JSON.parse(stored);
+      document.getElementById('bench-volume').value = b.volume;
+      document.getElementById('bench-dim').value    = b.dim;
+      document.getElementById('bench-mass').value   = b.mass;
+    }
+  }
+
+  // ── Stacks state ────────────────────────────────
+  const stacks = { STANDARD: [], SPECIAL: [], REJECTED: [] };
+
+  async function dispatch() {
+    const w = parseFloat(document.getElementById('width').value)  || 0;
+    const h = parseFloat(document.getElementById('height').value) || 0;
+    const l = parseFloat(document.getElementById('length').value) || 0;
+    const m = parseFloat(document.getElementById('mass').value)   || 0;
+    const bench = getBenchmarks();
+
+    try {
+      const res = await fetch('/api/sort', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          width: w, height: h, length: l, mass: m,
+          benchmarks: { volume: bench.volume, dim: bench.dim, mass: bench.mass }
+        })
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.error || 'Server error');
+        return;
+      }
+
+      const result = data.stack;
+      const vol    = data.volume;
+      const bulky  = vol >= bench.volume || Math.max(w, h, l) >= bench.dim;
+      const heavy  = m >= bench.mass;
+
+      // Show result badge
+      const box = document.getElementById('result');
+      box.className = 'result-box show result-' + result;
+      box.innerHTML = '→ ' + result +
+        '<div class="result-details">' +
+          'Volume: ' + vol.toLocaleString() + ' cm³' +
+          (bulky ? ' (bulky)' : '') +
+          ' · Mass: ' + m + ' kg' +
+          (heavy ? ' (heavy)' : '') +
+        '</div>';
+
+      // Add to stack
+      stacks[result].push({ w, h, l, m });
+      renderStacks();
+    } catch (err) {
+      alert('Could not reach backend. Is the server running?');
+    }
+  }
+
+  function clearAll() {
+    stacks.STANDARD = [];
+    stacks.SPECIAL  = [];
+    stacks.REJECTED = [];
+    document.getElementById('result').className = 'result-box';
+    renderStacks();
+  }
+
+  function renderStacks() {
+    ['STANDARD', 'SPECIAL', 'REJECTED'].forEach(key => {
+      const lower = key.toLowerCase();
+      document.getElementById('count-' + lower).textContent = stacks[key].length;
+      const container = document.getElementById('items-' + lower);
+      container.innerHTML = stacks[key].map((p, i) =>
+        '<div class="stack-item">' +
+          '<span class="dims">#' + (i + 1) + '  ' + p.w + '×' + p.h + '×' + p.l + ' cm</span>' +
+          '<span class="mass">' + p.m + ' kg</span>' +
+        '</div>'
+      ).reverse().join('');
+    });
+  }
+
+  // ── Keyboard shortcut ───────────────────────────
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && e.target.tagName === 'INPUT') dispatch();
+  });
+
+  // ── Preload defaults ────────────────────────────
+  loadBenchmarks();
+
+  // Dispatch the three default examples on load
+  (async function () {
+    const defaults = [
+      [10, 10, 10, 5],
+      [200, 200, 200, 10],
+      [150, 150, 150, 25],
+    ];
+    for (const [w, h, l, m] of defaults) {
+      document.getElementById('width').value  = w;
+      document.getElementById('height').value = h;
+      document.getElementById('length').value = l;
+      document.getElementById('mass').value   = m;
+      await dispatch();
+    }
+  })();
+</script>
+
+</body>
+</html>
