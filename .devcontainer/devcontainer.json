@@ -1,0 +1,13 @@
+{
+  "name": "Package Sorter",
+  "image": "mcr.microsoft.com/devcontainers/python:3.12",
+  "postCreateCommand": "pip install -r requirements.txt",
+  "postStartCommand": "python app.py &",
+  "forwardPorts": [5000],
+  "portsAttributes": {
+    "5000": {
+      "label": "Package Sorter App",
+      "onAutoForward": "openBrowser"
+    }
+  }
+}
