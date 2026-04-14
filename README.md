@@ -25,7 +25,7 @@ Sorts packages into **STANDARD**, **SPECIAL**, or **REJECTED** stacks based on v
 3. Dependencies install automatically and the server starts.
 4. A browser tab opens with the app — ready to use.
 
-> If the app doesn't auto-start, open the Codespaces terminal and run `python app.py`, then click the **Ports** tab → globe icon on port **5000**.
+> If the app doesn't auto-start, open the Codespaces terminal and run `python run.py`, then click the **Ports** tab → globe icon on port **5000**.
 
 ## Run Locally
 
@@ -43,7 +43,7 @@ source .env/bin/activate      # macOS / Linux
 pip install -r requirements.txt
 
 # 4. Run the app
-python app.py
+python run.py
 ```
 
 Then open **http://127.0.0.1:5000** in your browser.
@@ -51,13 +51,33 @@ Then open **http://127.0.0.1:5000** in your browser.
 ## Run Tests
 
 ```bash
-python -m unittest test_sort -v
+python -m pytest tests/ -v
+```
+
+## Project Structure
+
+```
+package-sorter/
+├── .devcontainer/          # GitHub Codespaces config
+├── .github/workflows/      # CI pipeline
+├── package_sorter/          # Application package
+│   ├── __init__.py          #   App factory (create_app)
+│   ├── sort.py              #   Core sorting logic
+│   └── routes.py            #   API & view routes
+├── static/images/           # Static assets
+├── templates/               # HTML templates
+├── tests/                   # Test suite
+│   ├── test_sort.py         #   Unit tests
+│   └── test_api.py          #   Integration tests
+├── run.py                   # Entry point
+├── requirements.txt
+└── README.md
 ```
 
 ## Usage (Python)
 
 ```python
-from sort import sort
+from package_sorter.sort import sort
 
 sort(10, 10, 10, 5)      # "STANDARD"
 sort(200, 200, 200, 10)  # "SPECIAL"

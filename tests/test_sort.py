@@ -1,5 +1,6 @@
 import unittest
-from sort import sort
+
+from package_sorter.sort import sort, sort_with_benchmarks
 
 
 class TestSort(unittest.TestCase):
@@ -8,7 +9,6 @@ class TestSort(unittest.TestCase):
         self.assertEqual(sort(10, 10, 10, 5), "STANDARD")
 
     def test_just_under_bulky_volume(self):
-        # 99 * 99 * 99 = 970_299 < 1_000_000
         self.assertEqual(sort(99, 99, 99, 19), "STANDARD")
 
     def test_just_under_bulky_dimension(self):
@@ -16,7 +16,6 @@ class TestSort(unittest.TestCase):
 
     # ── SPECIAL: bulky only ─────────────────────────────────────
     def test_bulky_by_volume(self):
-        # 100 * 100 * 100 = 1_000_000
         self.assertEqual(sort(100, 100, 100, 19), "SPECIAL")
 
     def test_bulky_by_single_dimension(self):
@@ -53,7 +52,6 @@ class TestSort(unittest.TestCase):
         self.assertEqual(sort(0, 0, 0, 0), "STANDARD")
 
     def test_exact_volume_boundary(self):
-        # exactly 1_000_000 → bulky
         self.assertEqual(sort(100, 100, 100, 0), "SPECIAL")
 
     def test_exact_dimension_boundary(self):
@@ -70,6 +68,45 @@ class TestSort(unittest.TestCase):
 
     def test_very_large_package(self):
         self.assertEqual(sort(1000, 1000, 1000, 1000), "REJECTED")
+
+
+class TestSortWithBenchmarks(unittest.TestCase):
+    def test_custom_volume_threshold(self):
+        # Under default threshold but over custom one
+        self.assertEqual(
+            sort_with_benchmarks(10, 10, 10, 5, volume_threshold=500),
+            "SPECIAL",
+        )
+
+    def test_custom_dim_threshold(self):
+        self.assertEqual(
+            sort_with_benchmarks(80, 1, 1, 5, dim_threshold=50),
+            "SPECIAL",
+        )
+
+    def test_custom_mass_threshold(self):
+        self.assertEqual(
+            sort_with_benchmarks(1, 1, 1, 10, mass_threshold=5),
+            "SPECIAL",
+        )
+
+    def test_custom_benchmarks_rejected(self):
+        self.assertEqual(
+            sort_with_benchmarks(
+                100, 100, 100, 10,
+                volume_threshold=500, mass_threshold=5,
+            ),
+            "REJECTED",
+        )
+
+    def test_custom_benchmarks_standard(self):
+        self.assertEqual(
+            sort_with_benchmarks(
+                10, 10, 10, 5,
+                volume_threshold=2_000_000, dim_threshold=300, mass_threshold=50,
+            ),
+            "STANDARD",
+        )
 
 
 if __name__ == "__main__":
